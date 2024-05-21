@@ -4,10 +4,6 @@ pipeline {
         label 'lab-server'
     }
 
-    tools { 
-        maven 'my-maven' 
-    }
-
     stages {
 
         stage('Build with Maven') {
