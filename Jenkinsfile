@@ -15,12 +15,10 @@ pipeline {
         runScript = 'sudo su ${appUser} -c "cd ${folderDeploy}; java -jar ${processName} > nohup.out 2>&1 &"'
     }
     stage('build') {
-
             steps {
                 sh (script: """ ${buildScript} """, label: "build with maven")
             }
         }
-      }
      stage('Deploy Shoe shop to lab-server') {
             steps {
                  sh (script: """ ${copyScript} """, label: "copy the file jar to folder deploy")
@@ -28,6 +26,7 @@ pipeline {
                  sh (script: """ ${runScript} """, label: "run the project")
             }
         }
+  }
     post {
         // Clean after build
         always {
