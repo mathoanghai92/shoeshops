@@ -13,7 +13,7 @@ pipeline {
         folderDeploy = "/datas/${appUser}"
         buildScript = "mvn clean install -DskipTests-true"
         copyScript = "sudo cp target/${processName} ${folderDeploy}"
-        permsScript = "sudo chown -r ${appUser}. ${folderDeploy}"
+        permsScript = "sudo chown -R ${appUser}. ${folderDeploy}"
         runScript = 'sudo su ${appUser} -c "cd ${folderDeploy}; java -jar ${processName} > nohup.out 2>&1 &"'
     }
 
