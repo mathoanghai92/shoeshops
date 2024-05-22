@@ -18,19 +18,32 @@ pipeline {
     }
 
     stages {
-
         stage('Build') {
             steps {
-                sh (script: "${buildScript}", label: "build with maven")
+                sh (script: "${buildScript}", label: "Build with Maven")
             }
         }
 
         stage('Deploy') {
             steps {
-                sh (script: "${copyScript}", label: "copy the file jar to folder deploy")
-                sh (script: "${permsScript}", label: "set permission for folder deploy")
-                sh (script: "${killScript}", label: "terminate running process!!!")
-                sh (script: "${runScript}", label: "run the project")
+                script {
+                    try {
+                        timeout(time: 5, unit: 'MINUTES') {
+                            env.useChoice = input message: "Can it be deployed?",
+                                parameters: [choice(name: 'deploy', choices: 'no\nyes', description: 'Choose "yes" if you want to deploy')]
+                        }
+                        if (env.useChoice == 'yes') {
+                            sh (script: "${copyScript}", label: "Copy the JAR file to the deployment folder")
+                            sh (script: "${permsScript}", label: "Set permission for the deployment folder")
+                            sh (script: "${killScript}", label: "Terminate the running process")
+                            sh (script: "${runScript}", label: "Run the project")
+                        } else {
+                            echo "Deployment not confirmed. Doing nothing."
+                        }
+                    } catch (Exception err) {
+                        echo "Caught exception: ${err}"
+                    }
+                }
             }
         }
     }
