@@ -14,13 +14,6 @@ pipeline {
         permsScript = "sudo chown -r ${appUser}. ${folderDeploy}"
         runScript = 'sudo su ${appUser} -c "cd ${folderDeploy}; java -jar ${processName} > nohup.out 2>&1 &"'
     }
-
-    stages {
-        stage('Info') {
-            steps {
-                sh(script: """ whoami;pwd;ls -la """, label: "first stage" )
-            }
-        }
     stage('build') {
 
             steps {
