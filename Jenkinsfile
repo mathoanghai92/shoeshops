@@ -1,7 +1,9 @@
 pipeline {
+
     agent {
         label 'lab-server'
     }
+
     environment { 
         appUser = "shoeshop"
         appName = "shoe-ShoppingCart"
@@ -14,19 +16,24 @@ pipeline {
         permsScript = "sudo chown -r ${appUser}. ${folderDeploy}"
         runScript = 'sudo su ${appUser} -c "cd ${folderDeploy}; java -jar ${processName} > nohup.out 2>&1 &"'
     }
-    stage('build') {
+
+    stages {
+
+        stage('build') {
             steps {
                 sh (script: """ ${buildScript} """, label: "build with maven")
             }
         }
-     stage('Deploy Shoe shop to lab-server') {
+
+        stage('Deploy Shoe shop to lab-server') {
             steps {
                  sh (script: """ ${copyScript} """, label: "copy the file jar to folder deploy")
                  sh (script: """ ${permsScript} """, label: "set permission for folder deploy")
                  sh (script: """ ${runScript} """, label: "run the project")
             }
         }
-  }
+ 
+    }
     post {
         // Clean after build
         always {
